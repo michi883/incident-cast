@@ -38,7 +38,19 @@ See [architecture_diagram.md](./architecture_diagram.md) for the full data + con
 
 See [architecture_diagram.md](./architecture_diagram.md) for the complete, high-fidelity architecture documentation, component deep-dives, and design principles.
 
-### System Topology
+### The three paths — what each is for
+
+Think of them as **watch · investigate · verify**. All three read the same Splunk evidence through one typed `QueryInterface` (`fixture · sdk · mcp`); they differ in *who drives* and *what you get out of it*.
+
+| Path | What it does | What you get |
+| :--- | :--- | :--- |
+| **A · Cinematic replay**<br/>(`incidentcast cast` → `/cases/[id]`) | Plays one incident back as an on-screen investigation: theories rise and fall as Splunk evidence lands, and the room converges on a root cause. | A **watchable, repeatable explanation of _how_ the root cause was found** — not just the answer. Runs in one command with no Splunk attached, so anyone can experience the full reasoning in ~2 minutes. |
+| **B · Agentic investigation**<br/>(`incidentcast investigate` → `/decks/[id]`) | Turns four autonomous LLM specialists loose on a raw incident; each queries Splunk via MCP on its own, cites the rows, and a rule-based aggregator clusters their findings into a forensic deck. | An **automated, evidence-cited investigation of an incident no one scripted** — the part that generalizes to *your own* incidents. Confidence comes from independent agents agreeing, not one model's guess. |
+| **C · On-demand live evidence**<br/>(any claim in the room) | Re-runs that claim's exact SPL live against Splunk and shows the rows returned, right then. | The ability to **verify any number on screen yourself, on the spot** — trust by auditing, not by faith in the model (falls back to captured rows if MCP is unreachable). |
+
+So: **A** lets you *understand* an incident, **B** lets you *automate* investigating a new one, and **C** lets you *check the receipts* on anything either produces.
+
+### System Topology (Paths A & B)
 
 ```mermaid
 %%{init: {"theme":"base","htmlLabels":false,"themeVariables":{"fontFamily":"ui-sans-serif, system-ui, -apple-system, sans-serif","fontSize":"14px","lineColor":"#94a3b8","edgeLabelBackground":"#ffffff"},"flowchart":{"htmlLabels":false,"curve":"basis","nodeSpacing":45,"rankSpacing":55,"padding":10}}}%%
@@ -85,25 +97,38 @@ flowchart LR
 
 ## Splunk AI capabilities used
 
-IncidentCast uses the **Splunk MCP Server** (Splunkbase App 7931) as a *runtime* Splunk AI
-capability — Splunk is not a passive data store here, it is queried live by AI agents through MCP.
+The **Splunk MCP Server** (Splunkbase App 7931) is Splunk's official **agent-facing interface** —
+the tool surface that lets an LLM call Splunk directly. IncidentCast uses it as a *runtime*
+capability: during an investigation the AI agents query Splunk live through MCP and **decide what to
+run themselves**. Splunk is the investigation substrate, not a passive data dump.
 
-- **AI specialists query Splunk via MCP at runtime.** With `--backend mcp`, each specialist agent
-  calls Splunk's own `splunk_run_query` MCP tool directly (see
-  `incidentcast/specialists/runtime.py::_investigate_mcp`). The exact SPL, returned rows, and
-  `backend: "mcp"` provenance are recorded into the generated `InvestigationReplay` artifact.
-- **The PermissionDenied evidence modal demonstrates a live MCP query.** On the final convergence
-  screen → **Inspect evidence** → **Open ↗** on a proof's SPL opens the compact *Live Splunk
-  Evidence* modal. It connects to the Splunk MCP Server, invokes `splunk_run_query`, and shows the
-  rows Splunk returns — with a visible **Splunk MCP connected · Live MCP query executed · N rows
-  returned from Splunk** banner. The call path is
-  `UI → GET /api/splunk/evidence?backend=mcp → scripts/splunk_admin.py mcp-query →
-  SplunkMCPQueryClient → Splunk MCP Server → Splunk Enterprise`, and each invocation logs
-  `Splunk MCP evidence query executed …` in the server console for auditability.
-- **Fixture mode exists only as an offline fallback.** It lets judges play the room with no Splunk
-  attached, and is what the modal falls back to (clearly labeled *“MCP unavailable. Showing captured
-  Splunk evidence.”*) if MCP is unconfigured or unreachable. Live MCP and captured/fixture are never
-  blurred: the modal only shows the live banner when a real MCP call actually succeeded.
+**How the agents actually use it (Path B, `--backend mcp`).** Each specialist is an LLM agent given
+exactly two tools — Splunk's own `splunk_run_query` and our in-process `emit_finding`. At runtime
+(`incidentcast/specialists/runtime.py::_investigate_mcp`) the code:
+
+1. opens an **authenticated MCP session** to the Splunk MCP Server over SSE (`sse_client` +
+   `ClientSession`, bearer token), then
+2. runs a **tool-use loop**: the model autonomously writes the SPL, we forward each call to Splunk
+   via `session.call_tool("splunk_run_query", …)`, feed the returned rows back into the
+   conversation, and repeat until the agent emits evidence-cited findings.
+
+So the agent isn't handed data — it *investigates*: it issues real SPL against live Splunk, reads
+the rows that come back, and forms claims it must back with those exact rows (`emit_finding` rejects
+any citation that doesn't match a query the agent actually ran). The SPL, rows, and
+`backend: "mcp"` provenance are recorded into the artifact.
+
+**On-demand live verification (Path C).** The *same* MCP surface is reachable from the UI for a human
+reviewer: on the convergence screen, **Inspect evidence → Open ↗** re-runs a finding's exact SPL live
+(`UI → /api/splunk/evidence?backend=mcp → scripts/splunk_admin.py mcp-query → SplunkMCPQueryClient →
+Splunk MCP Server → Splunk Enterprise`) and shows the rows behind a **Splunk MCP connected · Live MCP
+query executed · N rows returned from Splunk** banner. Each call logs `Splunk MCP evidence query
+executed …` for auditability. (This one is human-triggered, not agentic — it's how a skeptic checks
+the receipts.)
+
+**Fixture mode is only an offline fallback.** It lets judges play the room with no Splunk attached,
+and is what the modal falls back to (clearly labeled *“MCP unavailable. Showing captured Splunk
+evidence.”*) if MCP is unconfigured or unreachable. Live MCP and captured rows are never blurred: the
+live banner shows only when a real MCP call actually succeeded.
 
 To prove it end to end: set `SPLUNK_MCP_URL` / `SPLUNK_MCP_TOKEN` in `.env` (run
 `./scripts/setup_splunk_mcp.sh`), open the case, converge, **Inspect evidence**, **Open** the
