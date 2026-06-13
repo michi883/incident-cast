@@ -1,0 +1,27 @@
+{
+  "description": "Top error messages for 'checkout-api' across the incident window 14:00\u201314:10 UTC, grouped by normalized error string.",
+  "job_id": "sdk-live-reliability_error_type_breakdown",
+  "rows": [
+    {
+      "error_type": "PermissionDenied",
+      "message": "Permission 'secretmanager.versions.access' denied on resource 'projects/acme-prod/secrets/checkout-stripe-key/versions/latest'",
+      "count": "2570",
+      "first_seen": "2026-05-26T14:02:03Z",
+      "last_seen": "2026-05-26T14:14:59Z"
+    },
+    {
+      "error_type": "DeadlineExceeded",
+      "message": "context deadline exceeded calling secretmanager.googleapis.com",
+      "count": "190",
+      "first_seen": "2026-05-26T14:02:03Z",
+      "last_seen": "2026-05-26T14:14:53Z"
+    },
+    {
+      "error_type": "InternalError",
+      "message": "checkout handler returned 500 without classified cause",
+      "count": "88",
+      "first_seen": "2026-05-26T14:02:04Z",
+      "last_seen": "2026-05-26T14:14:57Z"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "description": "Rollback audit for checkout-api over the last 24 hours. A zero rollback_count means no rollback has been issued.",
+  "job_id": "sdk-live-deployment_rollback_check",
+  "rows": [
+    {
+      "deploy_count": "1",
+      "rollback_count": "0"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "description": "Downstream services calling checkout-api (upstream=$service$) that are experiencing knock-on errors during the incident window 13:50\u201314:10 UTC.",
+  "job_id": "sdk-live-blast_radius_downstream_impact",
+  "rows": [
+    {
+      "service": "notification-service",
+      "requests": "1038",
+      "errors": "1038",
+      "error_rate_pct": "100.00"
+    },
+    {
+      "service": "order-fulfillment-service",
+      "requests": "1036",
+      "errors": "1036",
+      "error_rate_pct": "100.00"
+    },
+    {
+      "service": "payment-gateway",
+      "requests": "1035",
+      "errors": "1035",
+      "error_rate_pct": "100.00"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "description": "Full provenance of every revision for checkout-api deployed in the last 24 hours.",
+  "job_id": "sdk-live-deployment_revision_provenance",
+  "rows": [
+    {
+      "revision": "checkout-api-00042",
+      "deployed_at": "2026-05-26T14:01:15Z",
+      "commit_message": "chore: migrate service account to least-privilege SA; remove legacy editor binding",
+      "build_id": "build-20260526-140055-a3f9",
+      "actor": "deploybot@acme-prod.iam.gserviceaccount.com",
+      "rollout": "100%"
+    }
+  ]
+}

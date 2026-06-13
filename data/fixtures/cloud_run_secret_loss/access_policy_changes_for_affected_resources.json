@@ -1,0 +1,12 @@
+{
+  "description": "SetIamPolicy (policy mutation) audit events for resources that later showed PERMISSION_DENIED, covering the 24h window before the incident.",
+  "job_id": "sdk-live-access_policy_changes_for_affected_resources",
+  "rows": [
+    {
+      "change_time": "2026-05-26T14:01:12Z",
+      "resource": "projects/acme-prod/secrets/checkout-stripe-key",
+      "principal_email": "iam-admin@acme-prod.iam.gserviceaccount.com",
+      "request_id": "req-7af20bc"
+    }
+  ]
+}

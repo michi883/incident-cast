@@ -1,0 +1,15 @@
+{
+  "description": "All deploys for checkout-api in the 24 hours leading up to and through the incident window.",
+  "job_id": "sdk-live-deployment_recent_deploys",
+  "rows": [
+    {
+      "deploy_time": "2026-05-26T14:01:15Z",
+      "revision": "checkout-api-00042",
+      "commit_message": "chore: migrate service account to least-privilege SA; remove legacy editor binding",
+      "build_id": "build-20260526-140055-a3f9",
+      "actor": "deploybot@acme-prod.iam.gserviceaccount.com",
+      "rollout": "100%",
+      "rollback": "false"
+    }
+  ]
+}

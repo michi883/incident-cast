@@ -1,0 +1,30 @@
+{
+  "description": "Error share by endpoint for 'checkout-api' across the incident window 13:50\u201314:10 UTC. Endpoints that require Secret Manager access (payment credential retrieval) are hard-hit; health and read-only endpoints are unaffected.",
+  "job_id": "sdk-live-blast_radius_error_share_by_endpoint",
+  "rows": [
+    {
+      "endpoint": "/checkout/process",
+      "requests": "48789",
+      "errors": "10455",
+      "error_rate_pct": "21.43"
+    },
+    {
+      "endpoint": "/checkout/confirm",
+      "requests": "27006",
+      "errors": "5657",
+      "error_rate_pct": "20.95"
+    },
+    {
+      "endpoint": "/orders",
+      "requests": "21255",
+      "errors": "105",
+      "error_rate_pct": "0.49"
+    },
+    {
+      "endpoint": "/healthz",
+      "requests": "11017",
+      "errors": "0",
+      "error_rate_pct": "0.00"
+    }
+  ]
+}

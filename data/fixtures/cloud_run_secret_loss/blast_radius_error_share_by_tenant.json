@@ -1,0 +1,24 @@
+{
+  "description": "Error share by tenant for 'checkout-api' across the incident window 13:50\u201314:10 UTC. All tenants are on the same Cloud Run revision and share the same Secret Manager dependency.",
+  "job_id": "sdk-live-blast_radius_error_share_by_tenant",
+  "rows": [
+    {
+      "tenant": "tenant-delta",
+      "requests": "36043",
+      "errors": "5418",
+      "error_rate_pct": "15.03"
+    },
+    {
+      "tenant": "tenant-alpha",
+      "requests": "36144",
+      "errors": "5425",
+      "error_rate_pct": "15.01"
+    },
+    {
+      "tenant": "tenant-gamma",
+      "requests": "35880",
+      "errors": "5374",
+      "error_rate_pct": "14.98"
+    }
+  ]
+}

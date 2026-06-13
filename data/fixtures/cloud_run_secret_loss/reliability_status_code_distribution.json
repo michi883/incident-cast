@@ -1,0 +1,21 @@
+{
+  "description": "Status code distribution for 'checkout-api' across the incident window 13:50\u201314:10 UTC.",
+  "job_id": "sdk-live-reliability_status_code_distribution",
+  "rows": [
+    {
+      "status_code": "200",
+      "count": "91850",
+      "share_pct": "84.99"
+    },
+    {
+      "status_code": "500",
+      "count": "14938",
+      "share_pct": "13.82"
+    },
+    {
+      "status_code": "503",
+      "count": "1279",
+      "share_pct": "1.18"
+    }
+  ]
+}

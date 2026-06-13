@@ -1,0 +1,24 @@
+{
+  "description": "Error share by region for 'checkout-api' across the incident window 13:50\u201314:10 UTC. The new Cloud Run revision was rolled out only to us-central1; other regions are still on the previous revision.",
+  "job_id": "sdk-live-blast_radius_region_share",
+  "rows": [
+    {
+      "region": "us-central1",
+      "requests": "60067",
+      "errors": "16002",
+      "error_rate_pct": "26.64"
+    },
+    {
+      "region": "eu-west1",
+      "requests": "24000",
+      "errors": "112",
+      "error_rate_pct": "0.47"
+    },
+    {
+      "region": "us-east1",
+      "requests": "24000",
+      "errors": "103",
+      "error_rate_pct": "0.43"
+    }
+  ]
+}

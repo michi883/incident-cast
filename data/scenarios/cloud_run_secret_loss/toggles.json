@@ -1,0 +1,8 @@
+{
+  "deploy_new_revision": true,
+  "remove_secret_access": true,
+  "traffic_spike": false,
+  "regional_failure": true,
+  "downstream_impact": true,
+  "rollback_revision": false
+}

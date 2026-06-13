@@ -1,0 +1,9 @@
+id: inc-2026-05-26-checkout-spike
+title: "checkout-api 5xx spike and latency degradation"
+triggered_at: "2026-05-26T14:03:00Z"
+earliest: "2026-05-26T13:50:00Z"
+latest: "2026-05-26T14:15:00Z"
+hints:
+  service: checkout-api
+  env: prod
+  region: us-central1

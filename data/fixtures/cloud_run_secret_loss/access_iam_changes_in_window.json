@@ -1,0 +1,15 @@
+{
+  "description": "IAM binding changes recorded in the 24h window preceding or during the incident. Shows roles added/removed from principals on specific resources.",
+  "job_id": "sdk-live-access_iam_changes_in_window",
+  "rows": [
+    {
+      "change_time": "2026-05-26T14:01:12Z",
+      "action": "remove",
+      "role": "roles/secretmanager.secretAccessor",
+      "member": "serviceAccount:checkout-api@acme-prod.iam.gserviceaccount.com",
+      "resource": "projects/acme-prod/secrets/checkout-stripe-key",
+      "actor": "iam-admin@acme-prod.iam.gserviceaccount.com",
+      "change_reason": "cleanup of legacy bindings"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  color: #e6e7ec;
+}
+
+/* Deep operational base with a single source of focused lighting from above — a war-room lit
+   by its own displays, not a flat SaaS canvas. Restrained: one cool wash, no grid, no scanlines. */
+body {
+  background:
+    radial-gradient(125% 80% at 50% -12%, rgba(56, 189, 248, 0.06), transparent 58%),
+    radial-gradient(100% 55% at 50% 0%, rgba(255, 255, 255, 0.025), transparent 55%),
+    #070809;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Used for fade-swapping text whose change is itself the signal (witness thoughts,
+   beat headlines). Motion represents reasoning change, not decoration. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* A discovery or convergence landing as the main event — a touch more presence than fadeIn. */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Ambient liveness: the room is still reasoning even while the user decides. A slow, barely
+   perceptible pulse — not animation for its own sake. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}

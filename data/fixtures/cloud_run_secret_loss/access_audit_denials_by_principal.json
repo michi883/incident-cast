@@ -1,0 +1,14 @@
+{
+  "description": "Audit-log PERMISSION_DENIED events grouped by principal, covering the incident window. Counts, methods, resources, and time bounds per principal.",
+  "job_id": "sdk-live-access_audit_denials_by_principal",
+  "rows": [
+    {
+      "principal_email": "checkout-api@acme-prod.iam.gserviceaccount.com",
+      "denials": "583",
+      "methods": "AccessSecretVersion",
+      "resources": "projects/acme-prod/secrets/checkout-stripe-key/versions/latest",
+      "first_denied": "2026-05-26T14:02:04Z",
+      "last_denied": "2026-05-26T14:14:59Z"
+    }
+  ]
+}

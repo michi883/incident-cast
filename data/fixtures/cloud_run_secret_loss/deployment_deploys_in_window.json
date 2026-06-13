@@ -1,0 +1,13 @@
+{
+  "description": "Deploys for checkout-api that landed within the incident window (2026-05-26T13:50:00Z \u2013 2026-05-26T14:15:00Z).",
+  "job_id": "sdk-live-deployment_deploys_in_window",
+  "rows": [
+    {
+      "deploy_time": "2026-05-26T14:01:15Z",
+      "revision": "checkout-api-00042",
+      "commit_message": "chore: migrate service account to least-privilege SA; remove legacy editor binding",
+      "build_id": "build-20260526-140055-a3f9",
+      "actor": "deploybot@acme-prod.iam.gserviceaccount.com"
+    }
+  ]
+}

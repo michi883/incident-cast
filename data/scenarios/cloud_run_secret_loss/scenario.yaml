@@ -1,0 +1,51 @@
+# Demo incident: a Cloud Run revision's "migrate to least-privilege SA" deploy revokes the
+# Secret Manager binding checkout needs for the Stripe key.
+#
+# The four specialists converge on revision checkout-api-00042:
+#   - Reliability:  error spike at 14:02:03 (PermissionDenied dominates)
+#   - Deployment:   checkout-api-00042 deploys at 14:01:15
+#   - Access:       secretAccessor binding removed at 14:01:12 (3s before the deploy)
+#   - Blast Radius: checkout-api + downstream services, confined to us-central1
+#
+# Values here are the single source of truth for the synthetic Splunk data AND the authored
+# case narrative (data/cases/cloud_run_secret_loss.yaml).
+
+service: checkout-api
+env: prod
+region: us-central1
+revision_before: checkout-api-00041
+revision_after: checkout-api-00042
+revision_after_commit: "chore: migrate service account to least-privilege SA; remove legacy editor binding"
+revision_after_build: build-20260526-140055-a3f9
+service_account: checkout-api@acme-prod.iam.gserviceaccount.com
+secret_resource: projects/acme-prod/secrets/checkout-stripe-key
+
+iam_change_at: "2026-05-26T14:01:12Z"
+deploy_at:     "2026-05-26T14:01:15Z"
+incident_at:   "2026-05-26T14:02:03Z"
+
+window_start:  "2026-05-26T13:50:00Z"
+window_end:    "2026-05-26T14:15:00Z"
+
+baseline_rps: 40            # per minute / 60 — synthetic traffic
+baseline_error_rate: 0.005  # 0.5%
+post_error_rate: 0.78       # 78%
+baseline_latency_p50_ms: 45
+baseline_latency_p99_ms: 185
+post_latency_p50_ms: 65
+post_latency_p99_ms: 1550
+
+# Healthy regions to contrast against the affected us-central1 (blast-radius comparison).
+healthy_regions:
+  - us-east1
+  - eu-west1
+
+downstream_services:
+  - order-fulfillment-service
+  - notification-service
+  - payment-gateway
+
+tenants:
+  - tenant-alpha
+  - tenant-gamma
+  - tenant-delta
