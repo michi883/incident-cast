@@ -36,25 +36,51 @@ See [architecture_diagram.md](./architecture_diagram.md) for the full data + con
 
 ## Architecture
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full diagram and design
-principles.
+See [architecture_diagram.md](./architecture_diagram.md) for the complete, high-fidelity architecture documentation, component deep-dives, and design principles.
 
+### System Topology
+
+```mermaid
+%%{init: {"theme":"base","htmlLabels":false,"themeVariables":{"fontFamily":"ui-sans-serif, system-ui, -apple-system, sans-serif","fontSize":"14px","lineColor":"#94a3b8","edgeLabelBackground":"#ffffff"},"flowchart":{"htmlLabels":false,"curve":"basis","nodeSpacing":45,"rankSpacing":55,"padding":10}}}%%
+flowchart TD
+    YAML["scenario.yaml"] -->|"generate + ingest · HEC :8088"| SE[("Splunk Enterprise")]
+    SE <-->|HTTPS| MCP["Splunk MCP Server<br/>App 7931"]
+    SE -->|SPL via SDK| QI["QueryInterface<br/>fixture · sdk · mcp"]
+    MCP -->|SPL via MCP| QI
+    QI --> CAST["incidentcast cast"]
+    QI --> INV["incidentcast investigate"]
+    subgraph A["Path A · Cinematic replay"]
+        CAST --> REPLAY["InvestigationReplay<br/>/cases/[id]"]
+    end
+    subgraph B["Path B · Agentic investigation"]
+        INV --> SPECS["4 specialist agents"] --> DECK["Forensic deck<br/>/decks/[id]"]
+    end
+    classDef scn fill:#faf5ff,stroke:#7c3aed,color:#581c87;
+    classDef spl fill:#fff1f2,stroke:#e11d48,color:#9f1239;
+    classDef core fill:#eff6ff,stroke:#2563eb,color:#1e3a8a;
+    classDef ui fill:#fdf2f8,stroke:#db2777,color:#9d174d;
+    class YAML scn
+    class SE,MCP spl
+    class QI,CAST,INV core
+    class REPLAY,SPECS,DECK ui
 ```
-scenario.yaml → generate.py → HEC → Splunk Enterprise (indexes)
-                                          │  SPL via SDK / MCP Server
-                                          ▼
-                                   QueryInterface (fixture | sdk | mcp)
-                                   ├─ cast → InvestigationReplay → /cases/[id]  (live room)
-                                   └─ investigate → Aggregator → deck → /decks/[id]  (agents)
+### Live Sourcing Flow (Path C)
 
-Live MCP evidence (runtime Splunk AI capability):
-  IncidentCast UI ("Inspect evidence" → "Open")
-    → Evidence API  (GET /api/splunk/evidence?backend=mcp)
-      → Splunk MCP Server  (splunk_run_query tool)
-        → Splunk Enterprise
-      ← returned rows
-    ← {backend:mcp, tool_name, spl, rowCount, executedAt, source}
-  → compact "Live Splunk Evidence" modal  (Splunk MCP connected · live query executed)
+```mermaid
+%%{init: {"theme":"base","htmlLabels":false,"themeVariables":{"fontFamily":"ui-sans-serif, system-ui, -apple-system, sans-serif","fontSize":"14px","lineColor":"#94a3b8","edgeLabelBackground":"#ffffff"},"flowchart":{"htmlLabels":false,"curve":"basis","nodeSpacing":45,"rankSpacing":55,"padding":10}}}%%
+flowchart LR
+    UI["Browser · /cases/[id]<br/>Inspect evidence"] -->|"GET /api/splunk/evidence"| API["Evidence API<br/>Next.js route"]
+    API -->|"splunk_admin.py mcp-query"| CL["SplunkMCPQueryClient"]
+    CL -->|splunk_run_query| MCP["Splunk MCP Server"]
+    MCP --> SE[("Splunk Enterprise")]
+    SE -.->|"rows + SPL + backend"| UI
+    classDef scn fill:#faf5ff,stroke:#7c3aed,color:#581c87;
+    classDef spl fill:#fff1f2,stroke:#e11d48,color:#9f1239;
+    classDef core fill:#eff6ff,stroke:#2563eb,color:#1e3a8a;
+    classDef ui fill:#fdf2f8,stroke:#db2777,color:#9d174d;
+    class UI,API ui
+    class CL core
+    class MCP,SE spl
 ```
 
 ## Splunk AI capabilities used
